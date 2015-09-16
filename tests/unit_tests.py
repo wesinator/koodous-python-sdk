@@ -37,6 +37,18 @@ class TestKoodousSDK(unittest.TestCase):
         self.koodous = koodous.Koodous(token)
         self.user = None
 
+    
+    def test_utils(self):
+        #Test hash256 function
+        sha256 = koodous.utils.sha256('tests/sample_test.apk')
+        self.assertTrue(sha256 == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
+
+    
+        #Test unpack function
+        result = koodous.utils.unpack('tests/sample_test.apk', 'dst_file')
+        self.assertTrue(hashlib.sha256(open('sample').read()).hexdigest() == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
+        os.remove('dst_file')
+
     def test_upload(self):
         def create_random_apk():
             pass
@@ -120,6 +132,7 @@ def main():
     suite.addTest(TestKoodousSDK("test_request_analysis", token))
     suite.addTest(TestKoodousSDK("test_download", token))
     suite.addTest(TestKoodousSDK("test_comments", token))
+    suite.addTest(TestKoodousSDK("test_utils", token))
 
     unittest.TextTestRunner().run(suite)
 

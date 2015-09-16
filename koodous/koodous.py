@@ -71,7 +71,6 @@ class Koodous(object):
                 - Exception() with text "Something was wrong during download"
         """
         down_url = self.get_download_url(sha256)
-        #print down_url
         if down_url:
             res = requests.get(url=down_url)
             sha256_downloaded = hashlib.sha256(res.content).hexdigest()
