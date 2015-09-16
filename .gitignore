@@ -1,3 +1,7 @@
 build/*
 *.pyc
 tests.py
+MANIFEST
+dist/*
+setup.cfg
+
