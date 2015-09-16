@@ -54,6 +54,13 @@ class TestKoodousSDK(unittest.TestCase):
         self.assertTrue(sha256_hash == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
         os.remove('sample')
 
+        #Download to file with download problem
+        try:
+            result = self.koodous.download_to_file('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
+            self.assertTrue(False)
+        except:
+            pass
+
         #Get the URL and then download:
         url = self.koodous.get_download_url('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
         response = requests.get(url=url)
@@ -99,9 +106,12 @@ class TestKoodousSDK(unittest.TestCase):
                 ret = self.koodous.delete_comment(comment['id'])
                 self.assertTrue(ret)
 
-if __name__ == '__main__':
-
-    token = sys.argv[1]
+def main():
+    try:
+        token = sys.argv[1]
+    except:
+        print "You must provide your token to use pass tests"
+        return
 
     suite = unittest.TestSuite()
     #suite.addTest(TestKoodousSDK("test_upload", token))
@@ -112,3 +122,6 @@ if __name__ == '__main__':
     suite.addTest(TestKoodousSDK("test_comments", token))
 
     unittest.TextTestRunner().run(suite)
+
+if __name__ == '__main__':
+    main()

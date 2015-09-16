@@ -62,6 +62,13 @@ class Koodous(object):
     def download_to_file(self, sha256, dst):
         """
             Function to download a file to a destination
+            Params:
+                - sha256 (str): sha256 hash required.
+                - dst (str): Path where the sample will be saved.
+            Return:
+                - sha256 hash if all was done.
+            Exception:
+                - Exception() with text "Something was wrong during download"
         """
         down_url = self.get_download_url(sha256)
         #print down_url
@@ -70,18 +77,25 @@ class Koodous(object):
             sha256_downloaded = hashlib.sha256(res.content).hexdigest()
             
             if sha256 != sha256_downloaded:
-                return None
+                raise Exception("Something was wrong during download")
             
             with open(dst, "wb") as fd:
                 #print "VA a escribir"
                 fd.write(res.content)
 
         else:
-            return None
+            raise Exception("Something was wrong during download")
         return sha256
 
 
     def get_download_url(self, sha256):
+        """
+            Return download URL for hash "sha256"
+            Params:
+                - sha256 (str): sha256 hash required.
+            Return:
+                - str: Download URL (valid during 5 minutes).
+        """
         url = '%s/apks/%s/download' % (BASE_URL, sha256)
 
         response = requests.get(url=url, headers=self.headers)
