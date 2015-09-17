@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(name='koodous-py',
       packages=['koodous'],
-      version='0.1',
+      version='0.2',
       description='Module to interact with Koodous API',
       author='Antonio Sanchez',
       author_email='asanchez@koodous.com',
