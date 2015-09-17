@@ -48,7 +48,7 @@ class TestKoodousSDK(unittest.TestCase):
     
         #Test unpack function
         result = koodous.utils.unpack('tests/sample_test.apk', 'dst_file')
-        self.assertTrue(hashlib.sha256(open('sample').read()).hexdigest() == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
+        self.assertTrue(hashlib.sha256(open('dst_file').read()).hexdigest() == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
         os.remove('dst_file')
 
     def test_upload(self):
@@ -88,10 +88,10 @@ class TestKoodousSDK(unittest.TestCase):
 
         #Download to file with download problem
         try:
-            result = self.koodous.download_to_file('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
+            result = self.koodous.download_to_file('ace5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
             self.assertTrue(False)
-        except:
-            pass
+        except Exception, why:
+            self.assertTrue(str(why) == 'Something was wrong during download')
 
         #Get the URL and then download:
         url = self.koodous.get_download_url('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
@@ -142,7 +142,7 @@ def main():
     try:
         token = sys.argv[1]
     except:
-        print "You must provide your token to use pass tests"
+        print "You must provide your token to pass tests"
         return
 
     suite = unittest.TestSuite()
