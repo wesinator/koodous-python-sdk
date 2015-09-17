@@ -1,5 +1,6 @@
 import hashlib
 import zipfile
+import StringIO
 
 def sha256(filepath):
     """
@@ -46,5 +47,45 @@ def unpack(filepath, dst):
 
     with open(dst, 'wb') as fd:
         fd.write(content)
-        
+
     return to_ret
+
+
+def is_apk_file(filepath):
+    """
+        Function to check if a file is an APK
+        Params:
+            - filepath (str): Path where is the file to check
+        Return:
+            True (bool) if the file is an APK
+            False (bool) otherwise
+    """
+    try:
+        zip = zipfile.ZipFile(open(filepath))
+        for i in zip.namelist():
+            if i == 'AndroidManifest.xml':
+                return True
+
+        return False
+    except:
+        return False
+
+
+def is_apk(content):
+    """
+        Function to check if a content is an APK
+        Params:
+            - content (str): Binary data of the file to check
+        Return:
+            True (bool) if the file is an APK
+            False (bool) otherwise
+    """
+    try:
+        zip = zipfile.ZipFile(StringIO.StringIO(content))
+        for i in zip.namelist():
+            if i == 'AndroidManifest.xml':
+                return True
+
+        return False
+    except:
+        return False
