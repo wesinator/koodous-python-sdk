@@ -21,6 +21,7 @@ import utils
 import requests
 import hashlib
 import urllib
+import time
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
@@ -44,20 +45,25 @@ class Koodous(object):
             Function to upload a file
         """
 
-        url = '%s/apks/%s/get_upload_url' % (BASE_URL, utils.sha256(filepath))
+        sha256_file = utils.sha256(filepath)
+        url = '%s/apks/%s/get_upload_url' % (BASE_URL, sha256_file)
         response = requests.get(url=url, headers=self.headers)
-        if r.status_code == 200:
-            #print r.text
-            j = r.json()
-            print j["upload_url"]
-            files = {'file': open(ffile, 'rb')}
-            s = requests.post(url=j["upload_url"], files=files)
-            print s.text
-        elif r.status_code == 409:
-            print "El fichero ya existe"
+        if response.status_code == 200:
+            json_data = response.json()
+            #print json_data.get('upload_url', None)
+            files = {'file': open(filepath, 'rb')}
+
+            response = requests.post(url=json_data.get("upload_url"), 
+                                     files=files)
+            while response.status_code == 404: #Workaround server problem sometimes
+                time.sleep(1)
+                response = requests.post(url=json_data.get("upload_url"), 
+                                         files=files)
+            return sha256_file
+        elif response.status_code == 409:
+            raise Exception("APK already exists")
         else:
-            print "Error desconocido"   
-            print r
+            raise Exception("Unknown error: %s" % response.text)
 
     def download_to_file(self, sha256, dst):
         """

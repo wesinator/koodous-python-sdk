@@ -22,6 +22,8 @@ import sys
 import hashlib
 import requests
 import os
+import random
+import struct
 
 import koodous
 
@@ -50,16 +52,34 @@ class TestKoodousSDK(unittest.TestCase):
         os.remove('dst_file')
 
     def test_upload(self):
-        def create_random_apk():
-            pass
-        #self.koodous.upload(filepath)
-        #TODO
-        return
+        # With file that already exists (must fail)
+        try:
+            result = self.koodous.upload('tests/sample_test.apk')
+        except Exception, why:
+            self.assertTrue(str(why) == "APK already exists")
+
+        # New sample that not exists, I suppose...
+        content = open('tests/sample_test.apk', 'rb').read()
+
+        #random sample generation
+        randpos = random.randint(3, len(content))
+        content = content[:randpos] + chr(0xFF) + chr(0x0A) + content[randpos:]
+        
+        with open('sample', 'wb') as fd:
+            fd.write(content)
+        
+        sha256_hash = koodous.utils.sha256('sample')
+        print '\n%s\n' % sha256_hash
+        ret = self.koodous.upload('sample')
+        os.remove('sample')
+        self.assertTrue(ret == sha256_hash)
+
         
     def test_download(self):
         #First method, directly to file
         result = self.koodous.download_to_file('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
-        sha256_hash = hashlib.sha256(open('sample').read()).hexdigest()
+        sha256_hash = koodous.utils.sha256('sample')
+
         #The method must return sha256, if return None means download failed
         self.assertTrue(result == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
 
@@ -126,7 +146,7 @@ def main():
         return
 
     suite = unittest.TestSuite()
-    #suite.addTest(TestKoodousSDK("test_upload", token))
+    suite.addTest(TestKoodousSDK("test_upload", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
     suite.addTest(TestKoodousSDK("test_request_analysis", token))
