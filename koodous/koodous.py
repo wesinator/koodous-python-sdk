@@ -185,3 +185,40 @@ class Koodous(object):
             return True
         
         return False
+
+
+    def vote_apk_positive(self, sha256, kind):
+        """
+            To send a positive vote to an APK (goodware)
+        """
+        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
+        return requests.post(url, data={'kind': 'positive'},
+                                  headers=self.headers)
+
+    def vote_apk_negative(self, sha256, kind):
+        """
+            To send a negative vote to an APK (malware)
+        """
+
+        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
+        return requests.post(url, data={'kind': 'negative'},
+                             headers=self.headers)
+
+    def vote_apk(self, sha256, kind):
+        """
+            Function to send a positive or negative vote to an APK.
+            Params:
+                sha256 (str): sha256 of the file
+                kind (str): 'positive' to send a positive vote or
+                            'negative' to send a negative vote
+            Return:
+                TODO
+        """
+        kind = str(kind)
+        if kind != 'positive' or kind != negative:
+            raise Exception("Kind vote must be positive or negative")
+
+        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
+        
+        return requests.post(url, data={'kind': kind},
+                                headers=self.headers)
