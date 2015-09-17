@@ -6,6 +6,7 @@ This is the Python SDK developed by our team to use Koodous easily.
 Koodous works with many different hashes algortihms, but we prefer sha256 to manage all samples in the better way.
 #How to install?
 Easy!!
+From Github:
 ```
 $ git clone https://github.com/Koodous/python-sdk.git
 $ cd python-sdk
@@ -13,12 +14,18 @@ $ pip install -r requirements.txt
 $ sudo python setup.py install
 ```
 
+From PyPi:
+```
+$ pip install koodous-py
+```
+
 #How to use?
 
-Only with your API token is very easy.
+The only thing that you need is your API token that you can obtain after register in [koodous.com](https://koodous.com) for free!
+Go to your profile and there it is.
 ```
-from koodous import *
-obj = new Koodous(token)
+import koodous
+obj = new koodous.Koodous(token)
 obj.upload(filepath)
 ```
 ##Search APKs
@@ -223,4 +230,19 @@ koodous.delete_comment(comment_id)
 koodous.analyze(sha256) 
 #Wait 2 minutes and try:
 analysis = get_analysis(sha256)
+```
+
+#Utils
+We implement some tools to interact with APKs and not related explicit with Koodous:
+##SHA256 file
+```
+>>> import koodous
+>>> koodous.utils.sha256('asd')
+'133ee989293f92736301280c6f14c89d521200c17dcdcecca30cd20705332d44'
+```
+
+Unpack and APK and generate one file with all content uncompressed.
+```
+>>> import koodous
+>>> koodous.utils.unpack('sample_test.apk', 'destination_file')
 ```
