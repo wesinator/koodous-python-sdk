@@ -14,7 +14,7 @@ $ pip install -r requirements.txt
 $ sudo python setup.py install
 ```
 
-From PyPi:
+Or easier, from PyPi:
 ```
 $ pip install koodous-py
 ```
@@ -25,8 +25,8 @@ The only thing that you need is your API token that you can obtain after registe
 Go to your profile and there it is.
 ```
 import koodous
-obj = new koodous.Koodous(token)
-obj.upload(filepath)
+koodous_obj = koodous.Koodous(token)
+koodous_obj.upload(filepath)
 ```
 ##Search APKs
 ```
@@ -63,11 +63,11 @@ This apks variable contains a python list with the details of the found APKs.
 ```
 ##Download an analysis
 ```
-analysis = koodous.get_analysis(sha256)
+analysis = koodous_obj.get_analysis(sha256)
 ```
 If analysis has "None" value this means that the analysis is not ready. You can require an analysis, wait 2 minutes approximately and request it again.
 ```
-koodous.analyze(apk) #Wait 2 minutes and retry get_analysis(sha256)
+koodous_obj.analyze(apk) #Wait 2 minutes and retry get_analysis(sha256)
 ```
 And then you can access to analysis information (JSON format):
 ```
@@ -204,32 +204,32 @@ print analysis
 ##Downloading a sample
 You can use two methods, first download to a file directly:
 ```
-koodous.download_to_file(sha256, "/home/name/filename")
+koodous_obj.download_to_file(sha256, "/home/name/filename")
 ```
 Or you can obtain the download URL to use as you want:
 ```
-url = koodous.get_download_url(sha256)
+url = koodous_obj.get_download_url(sha256)
 print url
 ```
 #Comments
 ##Posting a comment
 ```
-text_posted = koodous.post_comment(sha256, comment_text)
+text_posted = koodous_obj.post_comment(sha256, comment_text)
 ```
 ##See APK comments
 ```
-comments = koodous.get_comments(sha256)
+comments = koodous_obj.get_comments(sha256)
 ```
 ##Delete a comment
 ```
-koodous.delete_comment(comment_id)
+koodous_obj.delete_comment(comment_id)
 ```
 
 ##Analyze a sample
 ```
-koodous.analyze(sha256) 
+koodous_obj.analyze(sha256) 
 #Wait 2 minutes and try:
-analysis = get_analysis(sha256)
+analysis = koodous_obj.get_analysis(sha256)
 ```
 
 #Utils
