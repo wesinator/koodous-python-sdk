@@ -17,15 +17,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import utils
-import requests
 import hashlib
-import urllib
 import time
+import urllib
+
+import requests
+
+import utils
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
 BASE_URL = 'https://koodous.com/api/'
+
 
 class Koodous(object):
     def __init__(self, token):
@@ -50,14 +53,14 @@ class Koodous(object):
         response = requests.get(url=url, headers=self.headers)
         if response.status_code == 200:
             json_data = response.json()
-            #print json_data.get('upload_url', None)
+            # print json_data.get('upload_url', None)
             files = {'file': open(filepath, 'rb')}
 
-            response = requests.post(url=json_data.get("upload_url"), 
+            response = requests.post(url=json_data.get("upload_url"),
                                      files=files)
-            while response.status_code == 404: #Workaround server problem sometimes
+            while response.status_code == 404:  # Workaround server problem sometimes
                 time.sleep(1)
-                response = requests.post(url=json_data.get("upload_url"), 
+                response = requests.post(url=json_data.get("upload_url"),
                                          files=files)
             return sha256_file
         elif response.status_code == 409:
@@ -80,18 +83,17 @@ class Koodous(object):
         if down_url:
             res = requests.get(url=down_url)
             sha256_downloaded = hashlib.sha256(res.content).hexdigest()
-            
+
             if sha256 != sha256_downloaded:
                 raise Exception("Something was wrong during download")
-            
+
             with open(dst, "wb") as fd:
-                #print "VA a escribir"
+                # print "VA a escribir"
                 fd.write(res.content)
 
         else:
             raise Exception("Something was wrong during download")
         return sha256
-
 
     def get_download_url(self, sha256):
         """
@@ -104,11 +106,11 @@ class Koodous(object):
         url = '%s/apks/%s/download' % (BASE_URL, sha256)
 
         response = requests.get(url=url, headers=self.headers)
-        if response.status_code == 200 and response.json().get('download_url', None):
+        if response.status_code == 200 and response.json().get('download_url',
+                                                               None):
             return response.json().get('download_url', None)
         else:
             return None
-
 
     def search(self, search_term, limit=None):
         """
@@ -125,10 +127,11 @@ class Koodous(object):
             limit = float('Inf')
 
         next_page = '%s/apks?page_size=100&search=%s' % (BASE_URL,
-                                                    urllib.quote(search_term))
+                                                         urllib.quote(
+                                                             search_term))
 
         while next_page and len(to_ret) < limit:
-            response = requests.get(url=next_page, 
+            response = requests.get(url=next_page,
                                     headers=self.headers)
             next_page = response.json().get('next', None)
             for sample in response.json().get('results', []):
@@ -139,7 +142,22 @@ class Koodous(object):
 
     def get_analysis(self, sha256):
         url = '%s/apks/%s/analysis' % (BASE_URL, sha256)
-        
+
+        response = requests.get(url=url, headers=self.headers)
+        if response.status_code == 200:
+            return response.json()
+        return None
+
+    def get_public_ruleset(self, ruleset_id):
+        """
+        Retrieve a public ruleset by id.
+
+        :param ruleset_id: identifier of the public ruleset.
+        :return: `dict`
+        """
+        url = '{endpoint}/public_rulesets/{id}'.format(**dict(
+            endpoint=BASE_URL,
+            id=ruleset_id))
         response = requests.get(url=url, headers=self.headers)
         if response.status_code == 200:
             return response.json()
@@ -151,7 +169,6 @@ class Koodous(object):
         if res.status_code == 200:
             return True
         return False
-
 
     def post_comment(self, sha256, comment):
         url = '%s/apks/%s/comments' % (BASE_URL, sha256)
@@ -169,7 +186,7 @@ class Koodous(object):
         next_page = '%s/apks/%s/comments' % (BASE_URL, sha256)
 
         while next_page:
-            response = requests.get(url=next_page, 
+            response = requests.get(url=next_page,
                                     headers=self.headers)
             next_page = response.json().get('next', None)
             for sample in response.json().get('results', []):
@@ -183,5 +200,5 @@ class Koodous(object):
 
         if response.status_code == 204:
             return True
-        
+
         return False
