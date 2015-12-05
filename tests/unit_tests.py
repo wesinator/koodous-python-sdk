@@ -16,14 +16,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import unittest
-import json
-import sys
 import hashlib
-import requests
+import json
 import os
 import random
-import struct
+import sys
+import unittest
+
+import requests
 
 import koodous
 
@@ -32,23 +32,24 @@ __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 """
 Tests for python SDK for Koodous
 """
+
+
 class TestKoodousSDK(unittest.TestCase):
-    
     def __init__(self, testname, token):
         super(TestKoodousSDK, self).__init__(testname)
         self.koodous = koodous.Koodous(token)
         self.user = None
 
-    
     def test_utils(self):
-        #Test hash256 function
+        # Test hash256 function
         sha256 = koodous.utils.sha256('tests/sample_test.apk')
-        self.assertTrue(sha256 == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
+        self.assertTrue(
+            sha256 == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
 
-    
-        #Test unpack function
+        # Test unpack function
         result = koodous.utils.unpack('tests/sample_test.apk', 'dst_file')
-        self.assertTrue(hashlib.sha256(open('dst_file').read()).hexdigest() == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
+        self.assertTrue(hashlib.sha256(open(
+            'dst_file').read()).hexdigest() == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
         os.remove('dst_file')
 
     def test_upload(self):
@@ -61,82 +62,104 @@ class TestKoodousSDK(unittest.TestCase):
         # New sample that not exists, I suppose...
         content = open('tests/sample_test.apk', 'rb').read()
 
-        #random sample generation
+        # random sample generation
         randpos = random.randint(3, len(content))
         content = content[:randpos] + chr(0xFF) + chr(0x0A) + content[randpos:]
-        
+
         with open('sample', 'wb') as fd:
             fd.write(content)
-        
+
         sha256_hash = koodous.utils.sha256('sample')
         print '\n%s\n' % sha256_hash
         ret = self.koodous.upload('sample')
         os.remove('sample')
         self.assertTrue(ret == sha256_hash)
 
-        
     def test_download(self):
-        #First method, directly to file
-        result = self.koodous.download_to_file('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
+        # First method, directly to file
+        result = self.koodous.download_to_file(
+            'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111',
+            'sample')
         sha256_hash = koodous.utils.sha256('sample')
 
-        #The method must return sha256, if return None means download failed
-        self.assertTrue(result == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
+        # The method must return sha256, if return None means download failed
+        self.assertTrue(
+            result == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
 
-        self.assertTrue(sha256_hash == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
+        self.assertTrue(
+            sha256_hash == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
         os.remove('sample')
 
-        #Download to file with download problem
+        # Download to file with download problem
         try:
-            result = self.koodous.download_to_file('ace5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111', 'sample')
+            result = self.koodous.download_to_file(
+                'ace5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111',
+                'sample')
             self.assertTrue(False)
         except Exception, why:
             self.assertTrue(str(why) == 'Something was wrong during download')
 
-        #Get the URL and then download:
-        url = self.koodous.get_download_url('ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
+        # Get the URL and then download:
+        url = self.koodous.get_download_url(
+            'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
         response = requests.get(url=url)
         sha256_hash = hashlib.sha256(response.content).hexdigest()
-        self.assertTrue(sha256_hash == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
-
+        self.assertTrue(
+            sha256_hash == 'ce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111')
 
     def test_search(self):
-        #With results
-        apks = self.koodous.search('whatsapp and package_name:"com.whatsapp" and size:2MB+ and rating:1+')
+        # With results
+        apks = self.koodous.search(
+            'whatsapp and package_name:"com.whatsapp" and size:2MB+ and rating:1+')
         self.assertTrue(len(apks) > 0)
-        #With no results
-        apks = self.koodous.search('whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
+        # With no results
+        apks = self.koodous.search(
+            'whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
         self.assertTrue(len(apks) == 0)
 
     def test_analysis(self):
-        #With existing hash
-        analysis = self.koodous.get_analysis('b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
-        self.assertTrue(hashlib.md5(json.dumps(analysis)).hexdigest() == '719a027b3462b48929463dc65115f810')
-        #With non existing hash
+        # With existing hash
+        analysis = self.koodous.get_analysis(
+            'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
+        self.assertTrue(hashlib.md5(json.dumps(
+            analysis)).hexdigest() == '719a027b3462b48929463dc65115f810')
+        # With non existing hash
         analysis = self.koodous.get_analysis('abc')
         self.assertTrue(analysis == None)
 
-
     def test_request_analysis(self):
-        #With good result
-        result = self.koodous.analyze('b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
+        # With good result
+        result = self.koodous.analyze(
+            'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
         self.assertTrue(result)
-        #With non existing hash, result variable is False     
+        # With non existing hash, result variable is False
         result = self.koodous.analyze('abc')
         self.assertTrue(result == False)
 
-
     def test_comments(self):
-        text_posted = self.koodous.post_comment('317de8e1c3fef5130099fe98cdf51793d50669011caf8dd8c9b15714e724a283', 'test')
-        
+        text_posted = self.koodous.post_comment(
+            '317de8e1c3fef5130099fe98cdf51793d50669011caf8dd8c9b15714e724a283',
+            'test')
+
         user = self.koodous.my_user()
         username = user.get('username')
-        comments = self.koodous.get_comments('317de8e1c3fef5130099fe98cdf51793d50669011caf8dd8c9b15714e724a283')
+        comments = self.koodous.get_comments(
+            '317de8e1c3fef5130099fe98cdf51793d50669011caf8dd8c9b15714e724a283')
         self.assertTrue(len(comments) > 0)
         for comment in comments:
-            if comment['author']['username'] == username and comment['text'] == 'test':
+            if comment['author']['username'] == username and comment[
+                'text'] == 'test':
                 ret = self.koodous.delete_comment(comment['id'])
                 self.assertTrue(ret)
+
+    def test_get_public_ruleset(self):
+        ruleset_id = 685
+        created_on = 1436784424
+        ruleset = self.koodous.get_public_ruleset(ruleset_id=ruleset_id)
+
+        self.assertEqual(ruleset_id, ruleset['id'])
+        self.assertEqual(created_on, ruleset['created_on'])
+
 
 def main():
     try:
@@ -149,12 +172,14 @@ def main():
     suite.addTest(TestKoodousSDK("test_upload", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
+    suite.addTest(TestKoodousSDK("test_get_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_request_analysis", token))
     suite.addTest(TestKoodousSDK("test_download", token))
     suite.addTest(TestKoodousSDK("test_comments", token))
     suite.addTest(TestKoodousSDK("test_utils", token))
 
     unittest.TextTestRunner().run(suite)
+
 
 if __name__ == '__main__':
     main()
