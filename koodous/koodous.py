@@ -29,7 +29,6 @@ __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
 BASE_URL = 'https://koodous.com/api/'
 
-
 class Koodous(object):
     def __init__(self, token):
         self.token = token
@@ -162,6 +161,26 @@ class Koodous(object):
         if response.status_code == 200:
             return response.json()
         return None
+
+    def get_matches_public_ruleset(self, ruleset_id):
+        """
+        Retrieve the matches of a public ruleset by id.
+
+        :param ruleset_id: identifier of the public ruleset.
+        :return: `dict`
+        """
+        url = '{endpoint}/ruleset_matches/{id}/apks'.format(**dict(
+            endpoint=BASE_URL,
+            id=ruleset_id))
+        response = requests.get(url=url, headers=self.headers)
+        to_ret = response.json().get("results")
+        next_page = response.json().get('next', None)
+        while next_page and response.status_code==200:
+            response = requests.get(url=next_page, headers=self.headers)
+            if response.status_code == 200:
+                return to_ret.update(response.json().get("results"))
+            next_page = response.json.get('next', None)
+        return to_ret
 
     def analyze(self, sha256):
         url = '%s/apks/%s/analyze' % (BASE_URL, sha256)

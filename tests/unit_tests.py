@@ -122,7 +122,7 @@ class TestKoodousSDK(unittest.TestCase):
         analysis = self.koodous.get_analysis(
             'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
         self.assertTrue(hashlib.md5(json.dumps(
-            analysis)).hexdigest() == '719a027b3462b48929463dc65115f810')
+            analysis)).hexdigest() == '63717947c7e74150f71f5623d5b0318c')
         # With non existing hash
         analysis = self.koodous.get_analysis('abc')
         self.assertTrue(analysis == None)
@@ -160,16 +160,23 @@ class TestKoodousSDK(unittest.TestCase):
         self.assertEqual(ruleset_id, ruleset['id'])
         self.assertEqual(created_on, ruleset['created_on'])
 
+    def test_get_matches_public_ruleset(self):
+        ruleset_id = 709
+        apks = self.koodous.get_matches_public_ruleset(ruleset_id=ruleset_id)
+
+        self.assertTrue(len(apks) > 10)
+
 
 def main():
     try:
         token = sys.argv[1]
     except:
-        print "You must provide your token to pass tests"
+        print "You must provide your Koodous token to pass tests"
         return
 
     suite = unittest.TestSuite()
     suite.addTest(TestKoodousSDK("test_upload", token))
+    suite.addTest(TestKoodousSDK("test_get_matches_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
     suite.addTest(TestKoodousSDK("test_get_public_ruleset", token))
