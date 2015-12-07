@@ -29,6 +29,7 @@ __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
 BASE_URL = 'https://koodous.com/api/'
 
+
 class Koodous(object):
     def __init__(self, token):
         self.token = token
@@ -162,25 +163,44 @@ class Koodous(object):
             return response.json()
         return None
 
-    def get_matches_public_ruleset(self, ruleset_id):
+    def iter_matches_public_ruleset(self, ruleset_id):
         """
-        Retrieve the matches of a public ruleset by id.
+        Generator over the the matches of a public ruleset by id.
 
         :param ruleset_id: identifier of the public ruleset.
-        :return: `dict`
+        :return: generator
         """
-        url = '{endpoint}/ruleset_matches/{id}/apks'.format(**dict(
+        next_page = '{endpoint}/ruleset_matches/{id}/apks'.format(**dict(
             endpoint=BASE_URL,
             id=ruleset_id))
-        response = requests.get(url=url, headers=self.headers)
-        to_ret = response.json().get("results")
-        next_page = response.json().get('next', None)
-        while next_page and response.status_code==200:
+
+        while next_page:
             response = requests.get(url=next_page, headers=self.headers)
-            if response.status_code == 200:
-                return to_ret.update(response.json().get("results"))
-            next_page = response.json.get('next', None)
-        return to_ret
+            if response.status_code != 200:
+                break
+
+            r = response.json().get("results", None)
+
+            if r:
+                yield r
+
+            next_page = response.json().get('next', None)
+
+    def get_matches_public_ruleset(self, ruleset_id):
+        """
+        Retrieve the matches of a public ruleset by id. Avoid using this
+        method on rulesets with many matches. Use the iterator version
+        instead.
+
+        :param ruleset_id: identifier of the public ruleset.
+        :return: `list`
+        """
+        results = []
+
+        for r in self.iter_matches_public_ruleset(ruleset_id):
+            results.extend(r)
+
+        return results
 
     def analyze(self, sha256):
         url = '%s/apks/%s/analyze' % (BASE_URL, sha256)
@@ -222,14 +242,13 @@ class Koodous(object):
 
         return False
 
-
     def vote_apk_positive(self, sha256, kind):
         """
             To send a positive vote to an APK (goodware)
         """
         url = '%s/apks/%s/votes' % (BASE_URL, sha256)
         return requests.post(url, data={'kind': 'positive'},
-                                  headers=self.headers)
+                             headers=self.headers)
 
     def vote_apk_negative(self, sha256, kind):
         """
@@ -255,6 +274,6 @@ class Koodous(object):
             raise Exception("Kind vote must be positive or negative")
 
         url = '%s/apks/%s/votes' % (BASE_URL, sha256)
-        
+
         return requests.post(url, data={'kind': kind},
-                                headers=self.headers)
+                             headers=self.headers)

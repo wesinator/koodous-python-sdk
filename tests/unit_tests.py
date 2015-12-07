@@ -166,6 +166,32 @@ class TestKoodousSDK(unittest.TestCase):
 
         self.assertTrue(len(apks) > 10)
 
+    def test_iter_matches_public_ruleset(self):
+        PAGE_LEN = 25
+        N_PAGES = 3
+        ruleset_id = 836  # >= 151998 matches as of dec 7th, 2015
+        all_apks = []
+        all_sha256 = []
+        results = self.koodous.iter_matches_public_ruleset(
+            ruleset_id=ruleset_id)
+        i = 0
+
+        for apks in results:
+            if i < N_PAGES:
+                all_apks.extend(apks)
+                all_sha256.extend([a['sha256'] for a in apks])
+                self.assertTrue(len(apks) == PAGE_LEN)
+            else:
+                break
+            i += 1
+
+        # no duplicates
+        self.assertTrue(
+            len(all_sha256) == len(all_apks) == len(list(set(all_sha256))))
+
+        # expected length
+        self.assertTrue(len(all_apks) == N_PAGES * PAGE_LEN)
+
 
 def main():
     try:
@@ -177,6 +203,7 @@ def main():
     suite = unittest.TestSuite()
     suite.addTest(TestKoodousSDK("test_upload", token))
     suite.addTest(TestKoodousSDK("test_get_matches_public_ruleset", token))
+    suite.addTest(TestKoodousSDK("test_iter_matches_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
     suite.addTest(TestKoodousSDK("test_get_public_ruleset", token))
