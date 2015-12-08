@@ -1,38 +1,44 @@
-# Python SDK
+# Koodous Python SDK
 This is the Python SDK developed by our team to use Koodous easily.
 
-#In development!!!
+# SHA-256
 
-Koodous works with many different hashes algortihms, but we prefer sha256 to manage all samples in the better way.
-#How to install?
-Easy!!
-From Github:
-```
-$ git clone https://github.com/Koodous/python-sdk.git
-$ cd python-sdk
-$ pip install -r requirements.txt
-$ sudo python setup.py install
-```
+Koodous works with many different hashing functions, but we prefer sha256 to 
+manage all samples in the better way.
 
-Or easier, from PyPi:
+# Installation
+
+Latest published release from PyPi:
 ```
 $ pip install koodous-py
 ```
 
-#How to use?
-
-The only thing that you need is your API token that you can obtain after register in [koodous.com](https://koodous.com) for free!
-Go to your profile and there it is.
+Development snapshot from Github:
+```bash
+$ pip install 'git+https://github.com/Koodous/python-sdk.git#egg=koodous_py'
 ```
+
+# Library Usage
+
+The only thing that you need is your API token that you can obtain after 
+registering to [koodous.com](https://koodous.com) for free!
+
+Go to your [profile](https://koodous.com/settings/profile) and there it is.
+
+## Upload a file
+
+```python
 import koodous
 koodous_obj = koodous.Koodous(token)
 koodous_obj.upload(filepath)
 ```
-##Search APKs
-```
+
+## Search for APKs
+```python
 apks = obj.search('whatsapp and package_name:"com.whatsapp" and size:2MB+ and rating:2+')
 ```
-This apks variable contains a python list with the details of the found APKs.
+
+This returns contains a list object with the details of the found APKs.
 ```
 [   
     ...,
@@ -61,16 +67,22 @@ This apks variable contains a python list with the details of the found APKs.
     ...
 ]
 ```
-##Download an analysis
-```
+
+## Download an analysis
+```python
 analysis = koodous_obj.get_analysis(sha256)
 ```
-If analysis has "None" value this means that the analysis is not ready. You can require an analysis, wait 2 minutes approximately and request it again.
-```
+
+If analysis has `None` value this means that the analysis is not ready. You
+ can require an analysis, wait 2 minutes approximately and request it again.
+ 
+```python
 koodous_obj.analyze(apk) #Wait 2 minutes and retry get_analysis(sha256)
 ```
+
 And then you can access to analysis information (JSON format):
-```
+
+```python
 print analysis
 {
     "androguard": {
@@ -201,49 +213,100 @@ print analysis
 }
 ```
 
-##Downloading a sample
+## Downloading a sample
 You can use two methods, first download to a file directly:
-```
+
+```python
 koodous_obj.download_to_file(sha256, "/home/name/filename")
 ```
+
 Or you can obtain the download URL to use as you want:
-```
+
+```python
 url = koodous_obj.get_download_url(sha256)
 print url
 ```
-#Comments
-##Posting a comment
-```
+
+# Comments
+## Posting a comment
+```python
 text_posted = koodous_obj.post_comment(sha256, comment_text)
 ```
-##See APK comments
-```
+
+## See APK comments
+
+```python
 comments = koodous_obj.get_comments(sha256)
 ```
-##Delete a comment
-```
+
+## Delete a comment
+```python
 koodous_obj.delete_comment(comment_id)
 ```
 
-##Analyze a sample
-```
+## Analyze a sample
+```python
 koodous_obj.analyze(sha256) 
 #Wait 2 minutes and try:
 analysis = koodous_obj.get_analysis(sha256)
 ```
 
-#Utils
-We implement some tools to interact with APKs and not related explicit with Koodous:
-##SHA256 file
+# Command Line Interface (CLI)
+The SDK comes with a basic CLI that gets installed automatically and linked
+as an executable script by setuptools.
+
+```bash
+Usage: koocli [OPTIONS] COMMAND [ARGS]...
+
+  A simple command line interface (CLI) to the Koodous API.
+
+  In order to use this CLI, you need an account at koodous.com and you need
+  to grab your API token at https://koodous.com/settings/profile
+
+  You can pass the API token both as a command line option, or set it as an
+  environment variable (TOKEN).
+
+  To get help for each individual command, just type
+
+  $ koocli <command_name> --help
+
+Options:
+  --quiet / --no-quiet            Suppress output (logging is configured
+                                  separately)
+  --wdir PATH                     Working directory  [required]
+  --loglevel [info|warning|critical|error|debug|notset]
+  --token TEXT                    Koodous API token  [required]
+  --help                          Show this message and exit.
+
+Commands:
+  get_matches_public_ruleset  Get the APKs that match a public ruleset by...
+  get_public_ruleset          Get a public ruleset by its RULESET_ID
 ```
+
+## Get a public ruleset metadata and download the first three matches
+```
+$ TOKEN='<your API token>' koocli --wdir /tmp/ \
+    get_matches_public_ruleset  --download --save --limit 3 666
+```
+In this case 666 is the public ruleset identifier that you can get from the
+URL (e.g., `https://koodous.com/rulesets/666`)
+
+
+
+# Utils
+We implemented some tools to interact with APKs and not related explicitly with
+ Koodous:
+ 
+## SHA256 file
+```python
 >>> import koodous
 >>> koodous.utils.sha256('asd')
 '133ee989293f92736301280c6f14c89d521200c17dcdcecca30cd20705332d44'
 ```
 
-##Unpack file
+## Unpack file
 Unpack and APK and generate one file with all content uncompressed.
-```
+```python
 >>> import koodous
 >>> koodous.utils.unpack('sample_test.apk', 'destination_file')
 ```
