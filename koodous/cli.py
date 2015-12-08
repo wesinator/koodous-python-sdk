@@ -175,9 +175,11 @@ def get_matches_public_ruleset(ruleset_id, prompt, save, download, limit):
                 dst = os.path.join(wdir, '{}.apk'.format(sha256))
                 logger.info('Downloading %s to %s', sha256, dst)
 
-                api.download_to_file(sha256=sha256, dst=dst)
-
-                logger.info('APK downloaded successfully')
+                try:
+                    api.download_to_file(sha256=sha256, dst=dst)
+                    logger.info('APK downloaded successfully')
+                except Exception as ex:
+                    logger.error('Could not download %s: %s', sha256, ex)
 
             count += 1
 
