@@ -118,7 +118,8 @@ def get_public_ruleset(save, outfile, ruleset_id):
                    'working directory')
 @click.option('--prompt/--no-prompt', default=True,
               help='Prompt for confirmations')
-@click.option('--limit', type=int, default=0, help='Stop after LIMIT matches')
+@click.option('--limit', type=int, default=0,
+              help='Stop after LIMIT matches (defaults to 0, no limits)')
 @click.argument('ruleset_id', type=int)
 def get_matches_public_ruleset(ruleset_id, prompt, save, download, limit):
     """Get the APKs that match a public ruleset by its RULESET_ID
@@ -180,11 +181,9 @@ def get_matches_public_ruleset(ruleset_id, prompt, save, download, limit):
 
             count += 1
 
-            if count > 0 and count >= limit:
+            if 0 < limit <= count:
                 logger.info('Limit of %s matches reached: stopping!', limit)
-                break
-        if count >= limit:
-            break
+                return
 
 
 @cli.command()

@@ -4,3 +4,4 @@ humanfriendly==1.42
 Pygments==2.0.2
 requests==2.8.1
 androguard==3.0
+certifi

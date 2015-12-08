@@ -5,3 +5,4 @@ MANIFEST
 dist/*
 setup.cfg
 koodous_py.egg-info/
+.idea/*
