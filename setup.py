@@ -8,10 +8,11 @@ REQUIREMENTS_FILE = 'requirements.txt'
 try:
     install_reqs = parse_requirements(REQUIREMENTS_FILE,
                                       session=pip.download.PipSession())
-except AttributeError:
+except AttributeError as ex:
+    raise ex
+
     import warnings
     warnings.warn('Your PIP is very old: we strongly recommend to update it')
-    install_reqs = parse_requirements(REQUIREMENTS_FILE)
 
 reqs = [str(ir.req) for ir in install_reqs]
 
