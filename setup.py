@@ -5,8 +5,14 @@ from setuptools import setup
 
 REQUIREMENTS_FILE = 'requirements.txt'
 
-install_reqs = parse_requirements(REQUIREMENTS_FILE,
-                                  session=pip.download.PipSession())
+try:
+    install_reqs = parse_requirements(REQUIREMENTS_FILE,
+                                      session=pip.download.PipSession())
+except AttributeError:
+    import warnings
+    warnings.warn('Your PIP is very old: we strongly recommend to update it')
+    install_reqs = parse_requirements(REQUIREMENTS_FILE)
+
 reqs = [str(ir.req) for ir in install_reqs]
 
 setup(name='koodous-py',
