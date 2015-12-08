@@ -18,6 +18,7 @@ limitations under the License.
 """
 
 import hashlib
+import logging
 import time
 import urllib
 
@@ -28,6 +29,8 @@ import utils
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
 BASE_URL = 'https://koodous.com/api/'
+
+logger = logging.getLogger('koodous-api')
 
 
 class Koodous(object):
@@ -88,7 +91,6 @@ class Koodous(object):
                 raise Exception("Something was wrong during download")
 
             with open(dst, "wb") as fd:
-                # print "VA a escribir"
                 fd.write(res.content)
 
         else:

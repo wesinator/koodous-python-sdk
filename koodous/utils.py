@@ -1,6 +1,10 @@
-import hashlib
-import zipfile
 import StringIO
+import hashlib
+import json
+import zipfile
+
+from pygments import highlight, lexers, formatters
+
 
 def sha256(filepath):
     """
@@ -12,7 +16,7 @@ def sha256(filepath):
     """
     fd = open(filepath, 'rb')
     hasher_256 = hashlib.sha256()
-    chunk = fd.read(1024)   
+    chunk = fd.read(1024)
     while chunk:
         hasher_256.update(chunk)
         chunk = fd.read(1024)
@@ -89,3 +93,28 @@ def is_apk(content):
         return False
     except:
         return False
+
+
+def pygmentize(output, lexer=lexers.JsonLexer()):
+    """
+    Pygmentize any string for pretty terminal printing.
+
+    :param lexer: a lexer from `pygments.lexers`
+    :param output: the string to print
+    :return: the pygmentized string
+    """
+
+    return highlight(unicode(output, 'UTF-8'), lexer,
+                     formatters.TerminalFormatter())
+
+
+def pygmentize_json(obj, sort_keys=True, indent=4):
+    """
+    Pretty print a JSON string from a dictionary
+
+    :param indent: indentation spaces
+    :param sort_keys: whether to sort the keys
+    :param obj: a dict to build the JSON output string from
+    :return: a pygmentized string
+    """
+    return pygmentize(json.dumps(obj, sort_keys=sort_keys, indent=indent))

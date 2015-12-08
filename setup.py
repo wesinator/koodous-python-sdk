@@ -1,6 +1,13 @@
 #!/usr/bin/env python
-
+import pip
+from pip.req import parse_requirements
 from setuptools import setup
+
+REQUIREMENTS_FILE = 'requirements.txt'
+
+install_reqs = parse_requirements(REQUIREMENTS_FILE,
+                                  session=pip.download.PipSession())
+reqs = [str(ir.req) for ir in install_reqs]
 
 setup(name='koodous-py',
       packages=['koodous'],
@@ -11,8 +18,11 @@ setup(name='koodous-py',
       license='Apache Version 2',
       url='https://koodous.com/',
       download_url='https://github.com/Koodous/python-sdk/archive/master.zip',
-      keywords=['koodous', 'api', 'sdk', 'python', 'android', 'apk', 'malware'],
-      install_requires=[
-        "requests"
-      ],
-     )
+      keywords=['koodous', 'api', 'sdk', 'python', 'android', 'apk',
+                'malware'],
+      install_requires=reqs,
+      entry_points='''
+        [console_scripts]
+        koocli=koodous.cli:cli
+      '''
+      )
