@@ -1,9 +1,17 @@
 import StringIO
 import hashlib
 import json
+import logging
 import zipfile
 
 from pygments import highlight, lexers, formatters
+
+logger = logging.getLogger('koodous-api')
+
+try:
+    from androguard.core.bytecodes.apk import APK
+except ImportError:
+    APK = None
 
 
 def sha256(filepath):
@@ -118,3 +126,25 @@ def pygmentize_json(obj, sort_keys=True, indent=4):
     :return: a pygmentized string
     """
     return pygmentize(json.dumps(obj, sort_keys=sort_keys, indent=indent))
+
+
+def is_apk(filepath):
+    """
+    Check whether filepath is pointing to a readable, valid APK file.
+
+    Requires androguard. If androguard is not installed, fallsback to
+    returning always `True`.
+
+    :param filepath: path to file
+    :return: `True` if the path is pointing to a readable, valid APK file
+    """
+    if not APK:
+        return True
+
+    try:
+        APK(filepath)
+        return True
+    except Exception as ex:
+        logger.warning('File %s does not seem a valid APK file', filepath)
+
+    return False

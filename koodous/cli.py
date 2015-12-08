@@ -16,6 +16,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import glob
 import io
 import json
 import logging
@@ -24,7 +25,7 @@ import os
 import click
 
 from koodous import Koodous
-from utils import pygmentize_json
+from utils import pygmentize_json, is_apk, sha256 as file_hash
 
 __author__ = "Federico Maggi <federico.maggi@gmail.com>"
 
@@ -119,8 +120,11 @@ def get_public_ruleset(save, outfile, ruleset_id):
               help='Prompt for confirmations')
 @click.option('--limit', type=int, default=0, help='Stop after LIMIT matches')
 @click.argument('ruleset_id', type=int)
-def get_matches_public_ruleset(prompt, save, download, limit, ruleset_id):
-    """Get the APKs that match a public ruleset by its RULESET_ID"""
+def get_matches_public_ruleset(ruleset_id, prompt, save, download, limit):
+    """Get the APKs that match a public ruleset by its RULESET_ID
+
+    Example: https://koodous.com/rulesets/RULESET_ID (e.g., 666)
+    """
     ctx = click.get_current_context()
 
     api = ctx.meta.get('api')
@@ -181,3 +185,119 @@ def get_matches_public_ruleset(prompt, save, download, limit, ruleset_id):
                 break
         if count >= limit:
             break
+
+
+@cli.command()
+@click.argument('glob_exp')
+@click.option('--ignore-bad-apks/--no-ignore-bad-apks',
+              default=False, help='Bypass APK checks')
+def upload(glob_exp, ignore_bad_apks):
+    """Upload files matching the GLOB_EXP to Koodous.
+
+    \b
+    Example of GLOB_EXP are:
+    \b
+        - /path/to/*-files/*.apk
+        - /path/*
+
+    Some shell interpreters require you to wrap glob expression into
+    single quotes to prevent automatic expansion:
+
+        $ TOKEN='<your token>' koocli --wdir /tmp/ upload '/path/*.apk'
+
+    Note that non-files will be obviously skipped. And we do try
+    to skip non-APK files. Sometimes, however, malformed APKs exists that
+    manage to bypass or fail the validation.
+    """
+    ctx = click.get_current_context()
+    api = ctx.meta.get('api')
+    quiet = ctx.meta.get('quiet')
+
+    count = 0
+    skipped = 0
+    errors = 0
+
+    for path in glob.glob(glob_exp):
+        if os.path.isfile(path) and os.access(path, os.R_OK):
+            if is_apk(path) or ignore_bad_apks:
+                logger.info('Submitting file %s to Koodous', path)
+
+                sha256 = None
+                try:
+                    sha256 = api.upload(path)
+                except Exception as ex:
+                    logger.error('Error uploading file %s: %s', path, ex)
+                    errors += 1
+
+                if sha256:
+                    logger.info('File %s (%s) uploaded correctly', path,
+                                sha256)
+
+                    if not quiet:
+                        click.echo(sha256)
+
+                    count += 1
+            else:
+                logger.warning('Skipping file %s: invalid APK format', path)
+                skipped += 1
+
+    logger.info('Correctly submitted %d files (skipped %d, errors %d)',
+                count, skipped, errors)
+
+
+@cli.command()
+@click.option('--upload/--no-upload', default=False,
+              help='Upload the file for analysis if not found')
+@click.option('--save/--no-save', default=False,
+              help='Save JSON to file in the working directory')
+@click.option('--outfile', help='Optional file to save the metadata to',
+              type=click.File('wb'))
+@click.argument('sha256_or_file')
+def get_analysis(sha256_or_file, upload, save, outfile):
+    """
+    Get the Koodous report of SHA256_OR_FILE. If the file has not be analyzed
+    by Koodous, the file is just submitted (or not, according to the
+    --upload option).
+    """
+    ctx = click.get_current_context()
+    api = ctx.meta.get('api')
+    wdir = ctx.meta.get('wdir')
+
+    is_file = os.path.isfile(sha256_or_file) and os.access(sha256_or_file,
+                                                           os.R_OK)
+    sha256 = sha256_or_file
+    if is_file:
+        sha256 = file_hash(sha256_or_file)
+        logger.info('File %s SHA-256 digest = %s', sha256_or_file, sha256)
+
+    logger.info('Getting analysis of %s', sha256)
+
+    analysis = api.get_analysis(sha256)
+
+    click.echo(analysis)
+
+    if analysis:
+        click.echo(pygmentize_json(analysis))
+
+        if save:
+            if not outfile:
+                filepath = os.path.join(wdir, '{}.json'.format(sha256))
+                outfile = io.open(filepath, 'wb')
+            else:
+                filepath = outfile.name
+
+            logger.info('Saving analysis to %s', filepath)
+            json.dump(analysis, outfile)
+
+            logger.info('Saved to %s successfully', filepath)
+    elif is_file:
+        logger.warning('File not found on Koodous')
+
+        if upload:
+            logger.info('Uploading file for analysis')
+
+            try:
+                upload_result = api.upload(sha256_or_file)
+                logger.info('File %s uploaded successfully', upload_result)
+            except Exception as ex:
+                logger.error('Uploading %s failed: %s', sha256_or_file, ex)

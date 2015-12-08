@@ -284,14 +284,106 @@ Commands:
 ```
 
 ## Get a public ruleset metadata and download the first three matches
-```
+```bash
 $ TOKEN='<your API token>' koocli --wdir /tmp/ \
     get_matches_public_ruleset  --download --save --limit 3 666
+    
+2015-12-08 13:29:42 yummy-ng.local koocli[19989] INFO Attempting to fetch ruleset 666
+2015-12-08 13:29:42 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): koodous.com
+2015-12-08 13:29:43 yummy-ng.local koocli[19989] INFO Saving ruleset to /tmp/ruleset-666.json
+2015-12-08 13:29:43 yummy-ng.local koocli[19989] INFO Ruleset saved successfully
+2015-12-08 13:29:43 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): koodous.com
+{
+    "analyzed": true, 
+    "app": "Lucky Patcher", 
+    "company": "pitorroman", 
+    "corrupted": false, 
+    "created_on": 1448478971, 
+    "detected": true, 
+    "displayed_version": "4.0", 
+    "image": "https://cdn1.koodous.com/apk_images/647cb4313025b161a15e36c3270889a4bb556639f5d7aed8e2193f6904915bc7", 
+    "is_apk": true, 
+    "md5": "036d66d86911ed1bfb75c19f55a4b435", 
+    "on_devices": false, 
+    "package_name": "com.forpda.lp", 
+    "rating": 0, 
+    "repo": "", 
+    "sha1": "e16af16b743bfb4ac3fc54b6f90f7995805b58a0", 
+    "sha256": "01739acdf16999cabf147e679419c9dd7d910663d51e9e9ad9be95526f5cc770", 
+    "size": 789528, 
+    "stored": true, 
+    "tags": [], 
+    "trusted": false
+}
+
+2015-12-08 13:29:44 yummy-ng.local koocli[19989] INFO Saving metadata of 01739acdf16999cabf147e679419c9dd7d910663d51e9e9ad9be95526f5cc770 to /tmp/01739acdf16999cabf147e679419c9dd7d910663d51e9e9ad9be95526f5cc770.json
+2015-12-08 13:29:44 yummy-ng.local koocli[19989] INFO Downloading 01739acdf16999cabf147e679419c9dd7d910663d51e9e9ad9be95526f5cc770 to /tmp/01739acdf16999cabf147e679419c9dd7d910663d51e9e9ad9be95526f5cc770.apk
+2015-12-08 13:29:44 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): koodous.com
+2015-12-08 13:29:45 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): lmcn4.koodous.com
+2015-12-08 13:29:47 yummy-ng.local koocli[19989] INFO APK downloaded successfully
+{
+    "analyzed": true, 
+    "app": "Lucky Patcher", 
+    "company": "tengyhman", 
+    "corrupted": false, 
+    "created_on": 1448468963, 
+    "detected": true, 
+    "displayed_version": "2.7", 
+    "image": "https://cdn1.koodous.com/apk_images/647cb4313025b161a15e36c3270889a4bb556639f5d7aed8e2193f6904915bc7", 
+    "is_apk": true, 
+    "md5": "ec92e27ba0dcaed9150bb711e13bc817", 
+    "on_devices": false, 
+    "package_name": "com.wLuckyPatcherFree", 
+    "rating": 0, 
+    "repo": "", 
+    "sha1": "e1d8a51197afd5b0149504be17ccc0a29328da87", 
+    "sha256": "04d0dffc667e0f68a619deaf580eaa63227c7dd7ba1d63f47a6b616d9a275970", 
+    "size": 789362, 
+    "stored": true, 
+    "tags": [], 
+    "trusted": false
+}
+
+2015-12-08 13:29:47 yummy-ng.local koocli[19989] INFO Saving metadata of 04d0dffc667e0f68a619deaf580eaa63227c7dd7ba1d63f47a6b616d9a275970 to /tmp/04d0dffc667e0f68a619deaf580eaa63227c7dd7ba1d63f47a6b616d9a275970.json
+2015-12-08 13:29:47 yummy-ng.local koocli[19989] INFO Downloading 04d0dffc667e0f68a619deaf580eaa63227c7dd7ba1d63f47a6b616d9a275970 to /tmp/04d0dffc667e0f68a619deaf580eaa63227c7dd7ba1d63f47a6b616d9a275970.apk
+2015-12-08 13:29:47 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): koodous.com
+2015-12-08 13:29:48 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): lmcn4.koodous.com
+2015-12-08 13:29:49 yummy-ng.local koocli[19989] INFO APK downloaded successfully
+{
+    "analyzed": true, 
+    "app": "Puffin Web Browser", 
+    "company": "tegyhmans", 
+    "corrupted": false, 
+    "created_on": 1448466542, 
+    "detected": true, 
+    "displayed_version": "3.8.1.0", 
+    "image": "https://cdn1.koodous.com/apk_images/ca1310bc1ae8dc8795588bf894b9c01c43f00d4ff7b48f6ad7cc5130f33e573e", 
+    "is_apk": true, 
+    "md5": "82c6684ba4478d99111dd7f5e4edc6b9", 
+    "on_devices": false, 
+    "package_name": "com.cloudmosa.puffin", 
+    "rating": 0, 
+    "repo": "", 
+    "sha1": "e22a7ed086b9008d86aa5801868b096af30bd087", 
+    "sha256": "4b004d99816a6c777319e9abfb1c4c9b259da68cd8de65558e2596ba18ed9e86", 
+    "size": 761235, 
+    "stored": true, 
+    "tags": [], 
+    "trusted": false
+}
+
+2015-12-08 13:29:49 yummy-ng.local koocli[19989] INFO Saving metadata of 4b004d99816a6c777319e9abfb1c4c9b259da68cd8de65558e2596ba18ed9e86 to /tmp/4b004d99816a6c777319e9abfb1c4c9b259da68cd8de65558e2596ba18ed9e86.json
+2015-12-08 13:29:49 yummy-ng.local koocli[19989] INFO Downloading 4b004d99816a6c777319e9abfb1c4c9b259da68cd8de65558e2596ba18ed9e86 to /tmp/4b004d99816a6c777319e9abfb1c4c9b259da68cd8de65558e2596ba18ed9e86.apk
+2015-12-08 13:29:49 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): koodous.com
+2015-12-08 13:29:50 yummy-ng.local requests.packages.urllib3.connectionpool[19989] INFO Starting new HTTPS connection (1): lmcn4.koodous.com
+2015-12-08 13:29:52 yummy-ng.local koocli[19989] INFO APK downloaded successfully
+2015-12-08 13:29:52 yummy-ng.local koocli[19989] INFO Limit of 3 matches reached: stopping!
 ```
 In this case 666 is the public ruleset identifier that you can get from the
 URL (e.g., `https://koodous.com/rulesets/666`)
 
-
+You can play with the options to suppress logging, verbosity and avoid saving
+the metadata, if you're not interested in. Just saying.
 
 # Utils
 We implemented some tools to interact with APKs and not related explicitly with

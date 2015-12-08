@@ -127,6 +127,11 @@ class TestKoodousSDK(unittest.TestCase):
         analysis = self.koodous.get_analysis('abc')
         self.assertTrue(analysis == None)
 
+    def test_strange_analysis(self):
+        analysis = self.koodous.get_analysis('79a3bc6da45243355a920082dc67da0febf19379c25c721c43fd6b3f83ff4ef4')
+
+        self.assertTrue(analysis != None)
+
     def test_request_analysis(self):
         # With good result
         result = self.koodous.analyze(
@@ -206,6 +211,7 @@ def main():
     suite.addTest(TestKoodousSDK("test_iter_matches_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
+    suite.addTest(TestKoodousSDK("test_strange_analysis", token))
     suite.addTest(TestKoodousSDK("test_get_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_request_analysis", token))
     suite.addTest(TestKoodousSDK("test_download", token))
