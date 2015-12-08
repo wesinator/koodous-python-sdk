@@ -180,7 +180,7 @@ def get_matches_public_ruleset(ruleset_id, prompt, save, download, limit):
 
             count += 1
 
-            if count >= limit:
+            if count > 0 and count >= limit:
                 logger.info('Limit of %s matches reached: stopping!', limit)
                 break
         if count >= limit:
