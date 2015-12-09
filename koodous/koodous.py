@@ -158,6 +158,10 @@ class Koodous(object):
                                 verify=REQUESTS_CA_BUNDLE)
         if response.status_code == 200:
             return response.json()
+        elif response.status_code == 405: #Analysis doesn't exist
+            raise Exception(
+                  "This sample has not analysis available, you can request it.")
+        # Otherwise
         return None
 
     def get_public_ruleset(self, ruleset_id):

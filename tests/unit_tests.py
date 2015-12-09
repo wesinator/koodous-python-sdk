@@ -114,7 +114,7 @@ class TestKoodousSDK(unittest.TestCase):
         self.assertTrue(len(apks) > 0)
         # With no results
         apks = self.koodous.search(
-            'whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
+         'whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
         self.assertTrue(len(apks) == 0)
 
     def test_analysis(self):
@@ -123,15 +123,20 @@ class TestKoodousSDK(unittest.TestCase):
             'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
         self.assertTrue(hashlib.md5(json.dumps(
             analysis)).hexdigest() == '63717947c7e74150f71f5623d5b0318c')
+        
+        # With non existing analysis
+        try:
+            analysis = self.koodous.get_analysis(
+             '79a3bc6da45243355a920082dc67da0febf19379c25c721c43fd6b3f83ff4ef4')
+            self.assertTrue(analysis == None)
+        except Exception, reason:
+            self.assertTrue(str(reason) == 
+                "This sample has not analysis available, you can request it.")
+
         # With non existing hash
         analysis = self.koodous.get_analysis('abc')
         self.assertTrue(analysis == None)
-
-    def test_strange_analysis(self):
-        analysis = self.koodous.get_analysis('79a3bc6da45243355a920082dc67da0febf19379c25c721c43fd6b3f83ff4ef4')
-
-        self.assertTrue(analysis != None)
-
+            
     def test_request_analysis(self):
         # With good result
         result = self.koodous.analyze(
@@ -211,7 +216,7 @@ def main():
     suite.addTest(TestKoodousSDK("test_iter_matches_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))
-    suite.addTest(TestKoodousSDK("test_strange_analysis", token))
+    #suite.addTest(TestKoodousSDK("test_strange_analysis", token))
     suite.addTest(TestKoodousSDK("test_get_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_request_analysis", token))
     suite.addTest(TestKoodousSDK("test_download", token))

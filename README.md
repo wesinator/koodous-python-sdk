@@ -73,8 +73,10 @@ This returns contains a list object with the details of the found APKs.
 analysis = koodous_obj.get_analysis(sha256)
 ```
 
-If analysis has `None` value this means that the analysis is not ready. You
+If analysis raise an Exception this means that the analysis is not ready. You
  can require an analysis, wait 2 minutes approximately and request it again.
+
+If something strange happends, this call returns ```None```.
  
 ```python
 koodous_obj.analyze(apk) #Wait 2 minutes and retry get_analysis(sha256)
