@@ -100,8 +100,11 @@ print analysis
         "max_sdk_version": null,
         "certificate": {
             "sha1": "7750A347F871CF2C9753A6958E87ABE2358AA9B0",
-            "IssuerDN": "C=US, O=Android, CN=Android Debug",
-            "subjectDN": "C=US, O=Android, CN=Android Debug"
+            "not_after": "Feb 23 07:41:48 2045 GMT",
+            "issuerDN": "/C=US/O=Android/CN=Android Debug",
+            "subjectDN": "/C=US/O=Android/CN=Android Debug",
+            "serial": "54F565BC",
+            "not_before": "Mar 3 07:41:48 2015 GMT"
         },
         "min_sdk_version": "8",
         "version_code": "2",
@@ -399,7 +402,7 @@ We implemented some tools to interact with APKs and not related explicitly with
 ```
 
 ## Unpack file
-Unpack and APK and generate one file with all content uncompressed.
+Unpack an APK and generate one file with all content uncompressed.
 ```python
 >>> import koodous
 >>> koodous.utils.unpack('sample_test.apk', 'destination_file')
