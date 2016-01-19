@@ -6,7 +6,7 @@ REQUIREMENTS_FILE = 'requires.txt'
 
 setup(name='koodous-py',
       packages=['koodous'],
-      version='0.7',
+      version='0.8',
       description='Module to interact with Koodous API',
       author='Antonio Sanchez',
       author_email='asanchez@koodous.com',
