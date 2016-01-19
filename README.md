@@ -232,6 +232,13 @@ url = koodous_obj.get_download_url(sha256)
 print url
 ```
 
+## Analyze a sample
+```python
+koodous_obj.analyze(sha256) 
+#Wait 2 minutes and try:
+analysis = koodous_obj.get_analysis(sha256)
+```
+
 # Comments
 ## Posting a comment
 ```python
@@ -241,19 +248,49 @@ text_posted = koodous_obj.post_comment(sha256, comment_text)
 ## See APK comments
 
 ```python
-comments = koodous_obj.get_comments(sha256)
+>>> koodous_obj.get_comments(sha256)
+[{
+    'author': {
+        'username': 'OpenAntivirus', 'total_public_rulesets': 1, 'first_name': '', 'last_name': '', 'total_comments': 669323, 'bio': None, 'following': [], 'twitter_user': None, 'is_superuser': True, 'avatar_url': 'https://cdn1.koodous.com/avatars/f743de5a3e28c8e0a513b73845dff589c7a3fab03eee46ed933a8ea8c7800540', 'last_login': 1440422421, 'total_following': 0, 'latest_24h_social_detections': 5, 'total_social_detections': 589, 'total_followers': 22, 'occupation': None, 'total_votes': 686908, 'date_joined': 1431507752
+    }, 'text': '#sms-fraud  This application sends SMS messages that costs you money', 'apk': 'b499cb515e5b6086c7b993c529e602b190b4a031534ec887d8dcaf7ec4d6a489', 'created_on': 1452908630, 'ruleset': None, 'modified_on': 1452908630, 'id': 637165
+}]
 ```
 
 ## Delete a comment
 ```python
 koodous_obj.delete_comment(comment_id)
 ```
-
-## Analyze a sample
+#Votes
+## Vote a sample positive (goodware)
 ```python
-koodous_obj.analyze(sha256) 
-#Wait 2 minutes and try:
-analysis = koodous_obj.get_analysis(sha256)
+>>> koodous_obj.vote_apk(sha256, koodous.POSITIVE)
+{'kind': 'positive'}
+```
+
+## Vote a sample negative (malware)
+```python
+>>> koodous_obj.vote_apk(sha256, koodous.NEGATIVE)
+{'kind': 'negative'}
+```
+
+## Get votes for an APK
+```python
+>>> koodous_obj.votes(sha256)
+{
+    'count': 3,
+    'previous': None,
+    'results': [{
+        'kind': 'negative',
+        'analyst': 'Incentoll'
+    }, {
+        'kind': 'negative',
+        'analyst': 'OpenAntivirus'
+    }, {
+        'kind': 'negative',
+        'analyst': 'Forits'
+    }],
+    'next': None
+}
 ```
 
 # Command Line Interface (CLI)

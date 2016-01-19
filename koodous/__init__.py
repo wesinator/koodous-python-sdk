@@ -1,2 +1,2 @@
-from .koodous import Koodous
+from .koodous import *
 from .utils import *

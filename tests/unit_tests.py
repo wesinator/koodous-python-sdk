@@ -33,6 +33,7 @@ __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 Tests for python SDK for Koodous
 """
 
+sha256new_hash = None
 
 class TestKoodousSDK(unittest.TestCase):
     def __init__(self, testname, token):
@@ -69,11 +70,14 @@ class TestKoodousSDK(unittest.TestCase):
         with open('sample', 'wb') as fd:
             fd.write(content)
 
-        sha256_hash = koodous.utils.sha256('sample')
-        print '\n%s\n' % sha256_hash
+        global sha256new_hash
+
+        sha256new_hash = koodous.utils.sha256('sample')
+        print '\n%s\n' % sha256new_hash
+        
         ret = self.koodous.upload('sample')
         os.remove('sample')
-        self.assertTrue(ret == sha256_hash)
+        self.assertTrue(ret == sha256new_hash)
 
     def test_download(self):
         # First method, directly to file
@@ -202,6 +206,25 @@ class TestKoodousSDK(unittest.TestCase):
         # expected length
         self.assertTrue(len(all_apks) == N_PAGES * PAGE_LEN)
 
+    def test_vote(self):
+        #Vote APK as negative
+        print "Voting this APK: %s" % sha256new_hash
+        try:
+            kind = self.koodous.vote_apk(sha256new_hash, koodous.NEGATIVE)
+        except Exception, why:
+            print why
+            self.assertTrue(False)
+        self.assertTrue(kind == {"kind":"negative"})
+
+        #Retrieve votes
+        votes = self.koodous.votes(sha256new_hash)
+        self.assertTrue(votes['count'] == 1)
+        self.assertTrue(votes['results'][0]['kind'] == "negative")
+        self.assertTrue(votes['results'][0]['analyst'] == self.koodous.my_user()['username'])
+        
+        #Vote APK as positive
+        kind = self.koodous.vote_apk(sha256new_hash, koodous.POSITIVE)
+        self.assertTrue(kind == {"kind":"positive"})
 
 def main():
     try:
@@ -213,6 +236,7 @@ def main():
     suite = unittest.TestSuite()
     suite.addTest(TestKoodousSDK("test_upload", token))
     suite.addTest(TestKoodousSDK("test_get_matches_public_ruleset", token))
+    suite.addTest(TestKoodousSDK("test_vote", token))
     suite.addTest(TestKoodousSDK("test_iter_matches_public_ruleset", token))
     suite.addTest(TestKoodousSDK("test_search", token))
     suite.addTest(TestKoodousSDK("test_analysis", token))

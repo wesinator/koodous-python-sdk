@@ -29,12 +29,14 @@ import utils
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
-BASE_URL = 'https://koodous.com/api/'
+BASE_URL = 'https://api.koodous.com/'
 
 REQUESTS_CA_BUNDLE = certifi.where()
 
 logger = logging.getLogger('koodous-api')
 
+POSITIVE = 'positive'
+NEGATIVE = 'negative'
 
 class Koodous(object):
     def __init__(self, token):
@@ -264,23 +266,6 @@ class Koodous(object):
 
         return False
 
-    def vote_apk_positive(self, sha256, kind):
-        """
-            To send a positive vote to an APK (goodware)
-        """
-        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
-        return requests.post(url, data={'kind': 'positive'},
-                             headers=self.headers, verify=REQUESTS_CA_BUNDLE)
-
-    def vote_apk_negative(self, sha256, kind):
-        """
-            To send a negative vote to an APK (malware)
-        """
-
-        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
-        return requests.post(url, data={'kind': 'negative'},
-                             headers=self.headers, verify=REQUESTS_CA_BUNDLE)
-
     def vote_apk(self, sha256, kind):
         """
             Function to send a positive or negative vote to an APK.
@@ -292,10 +277,40 @@ class Koodous(object):
                 TODO
         """
         kind = str(kind)
-        if kind != 'positive' or kind != negative:
+        if kind != POSITIVE and kind != NEGATIVE:
             raise Exception("Kind vote must be positive or negative")
 
         url = '%s/apks/%s/votes' % (BASE_URL, sha256)
 
-        return requests.post(url, data={'kind': kind},
+        res = requests.post(url, data={'kind': kind},
                              headers=self.headers, verify=REQUESTS_CA_BUNDLE)
+        return res.json()
+
+    def votes(self, sha256):
+        """
+            Function to retrieve votes for certain APK.
+            Params:
+                sha256 (str): sha256 of the file
+            Return:
+                dictionary with this information:
+                {
+                    "count": 3,
+                    "next": null,
+                    "previous": null,
+                    "results": [{
+                        "kind": "negative",
+                        "analyst": "Incentoll"
+                    }, {
+                        "kind": "negative",
+                        "analyst": "OpenAntivirus"
+                    }, {
+                        "kind": "negative",
+                        "analyst": "Harnows"
+                    }]
+                }
+        """
+
+        url = '%s/apks/%s/votes' % (BASE_URL, sha256)
+        res = requests.get(url, 
+                           headers=self.headers, verify=REQUESTS_CA_BUNDLE)
+        return res.json()
