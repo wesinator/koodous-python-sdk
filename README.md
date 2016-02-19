@@ -434,7 +434,7 @@ We implemented some tools to interact with APKs and not related explicitly with
 ## SHA256 file
 ```python
 >>> import koodous
->>> koodous.utils.sha256('asd')
+>>> koodous.utils.sha256('/home/user/file.apk')
 '133ee989293f92736301280c6f14c89d521200c17dcdcecca30cd20705332d44'
 ```
 
