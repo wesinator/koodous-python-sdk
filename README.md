@@ -238,6 +238,46 @@ koodous_obj.analyze(sha256)
 #Wait 2 minutes and try:
 analysis = koodous_obj.get_analysis(sha256)
 ```
+# Rulesets
+## Get matches
+It must be used as iterator in python, for example:
+```python
+for val in koodous_obj.get_ruleset_matches(1337):
+    print val
+```
+
+**val** will be a python dictionary with the following format:
+
+```json
+{
+    "count": 3,
+    "results": [{
+        "created_on": 1498041142,
+        "rating": 0,
+        "image": "https://cdn1.koodous.com/apk_images/2017/06/21/75d1a1e52070ff02e46dd9580c6ad96364a26d2714e802f8786bf285e390098a",
+        "tags": [],
+        "md5": "81b3f1c54330e3ca727b270f2a454354",
+        "sha1": "d5d9f14f00c96b48acb8ac57960c6ca557cf5433",
+        "sha256": "304202910418375c030472c31c8f588f9f6f6269a869d24e592b521d584031c4",
+        "app": "搜狗浏览器",
+        "package_name": "sogou.mobile.explorer",
+        "company": "Sogou-inc",
+        "displayed_version": "5.7.0",
+        "size": 11659573,
+        "stored": true,
+        "analyzed": true,
+        "is_apk": true,
+        "trusted": false,
+        "detected": false,
+        "corrupted": false,
+        "repo": "",
+        "on_devices": false
+    },
+    {...},
+    {...}
+    ]
+}
+```
 
 # Comments
 ## Posting a comment

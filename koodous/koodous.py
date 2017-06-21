@@ -153,6 +153,21 @@ class Koodous(object):
                     break
         return to_ret
 
+    def get_ruleset_matches(self, ruleset_id):
+        """Retrieve apks from a private (if it's mine) or a public ruleset
+        """
+        next_url = '{endpoint}/ruleset_matches/{id}/apks'.format(**dict(
+                            endpoint=BASE_URL,
+                            id=ruleset_id))
+        while next_url:
+            response = requests.get(url=next_url, headers=self.headers,
+                                verify=REQUESTS_CA_BUNDLE)
+            to_yield = response.json()
+            next_url = to_yield['next']
+            del to_yield['next']
+            del to_yield['previous']
+            yield to_yield
+
     def get_analysis(self, sha256):
         url = '%s/apks/%s/analysis' % (BASE_URL, sha256)
 
