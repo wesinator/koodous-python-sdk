@@ -125,9 +125,9 @@ class TestKoodousSDK(unittest.TestCase):
         # With existing hash
         analysis = self.koodous.get_analysis(
             'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
-        self.assertTrue(hashlib.md5(json.dumps(
-            analysis)).hexdigest() == '63717947c7e74150f71f5623d5b0318c')
-        
+        self.assertEqual('17542eb47ddb6330d04d829dbf2f1ad1',
+                         hashlib.md5(json.dumps(analysis)).hexdigest())
+
         # With non existing analysis
         try:
             analysis = self.koodous.get_analysis(
