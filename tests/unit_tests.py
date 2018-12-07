@@ -114,11 +114,11 @@ class TestKoodousSDK(unittest.TestCase):
     def test_search(self):
         # With results
         apks = self.koodous.search(
-            'whatsapp and package_name:"com.whatsapp" and size:2MB+ and rating:1+')
+            'whatsapp and package_name:"com.whatsapp" and size:>2097152')
         self.assertTrue(len(apks) > 0)
         # With no results
         apks = self.koodous.search(
-         'whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
+         'whatsapp and package_name:"com.whatsapp" and size:<100')
         self.assertTrue(len(apks) == 0)
 
     def test_analysis(self):
