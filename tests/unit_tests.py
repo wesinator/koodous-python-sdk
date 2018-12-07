@@ -127,8 +127,10 @@ class TestKoodousSDK(unittest.TestCase):
         # With existing hash
         analysis = self.koodous.get_analysis(
             'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
-        self.assertEqual('17542eb47ddb6330d04d829dbf2f1ad1',
-                         hashlib.md5(json.dumps(analysis)).hexdigest())
+        self.assertEqual('25365219b53b3c072e23710f5d2d363f',
+                         hashlib.md5(
+                             json.dumps(analysis, sort_keys=True).encode("utf-8")
+                         ).hexdigest())
 
         # With non existing analysis
         try:
