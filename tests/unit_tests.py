@@ -97,11 +97,12 @@ class TestKoodousSDK(unittest.TestCase):
         # Download to file with download problem
         try:
             result = self.koodous.download_to_file(
-                'ace5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111',
+                'xce5db3ec259792f80680ad2217af240d10fb4e1939226087d835cf4b2b837111',
                 'sample')
-            self.assertTrue(False)
-            self.assertTrue(str(why) == 'Something was wrong during download')
+            self.fail("This SHA isn't valid, so file should not be downloadable")
         except Exception as why:
+            self.assertEqual('Something was wrong during download',
+                             str(why))
 
         # Get the URL and then download:
         url = self.koodous.get_download_url(
