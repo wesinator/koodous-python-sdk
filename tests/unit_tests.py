@@ -49,8 +49,9 @@ class TestKoodousSDK(unittest.TestCase):
 
         # Test unpack function
         result = koodous.utils.unpack('tests/sample_test.apk', 'dst_file')
-        self.assertTrue(hashlib.sha256(open(
-            'dst_file').read()).hexdigest() == 'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf')
+        self.assertEqual(
+            'e374058ad507072dfa0755371e68a5ef202365c2d3ca4334c3274cdfe01db3bf',
+            hashlib.sha256(open('dst_file', 'rb').read()).hexdigest())
         os.remove('dst_file')
 
     def test_upload(self):
