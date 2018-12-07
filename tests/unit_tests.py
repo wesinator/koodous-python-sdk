@@ -131,11 +131,12 @@ class TestKoodousSDK(unittest.TestCase):
         # With non existing analysis
         try:
             analysis = self.koodous.get_analysis(
-             '79a3bc6da45243355a920082dc67da0febf19379c25c721c43fd6b3f83ff4ef4')
-            self.assertTrue(analysis == None)
+                '522d46a6b649f0847948926df7f6dfce4c3f9283432bf65ac0172de11a6f2bc5')
+            self.fail("Expected an exception to have been raised")
         except Exception, reason:
-            self.assertTrue(str(reason) == 
-                "This sample has not analysis available, you can request it.")
+            self.assertEqual(
+                "This sample has not analysis available, you can request it.",
+                str(reason))
 
         # With non existing hash
         analysis = self.koodous.get_analysis('abc')
