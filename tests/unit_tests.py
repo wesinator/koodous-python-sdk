@@ -65,7 +65,7 @@ class TestKoodousSDK(unittest.TestCase):
 
         # random sample generation
         randpos = random.randint(3, len(content))
-        content = content[:randpos] + chr(0xFF) + chr(0x0A) + content[randpos:]
+        content = content[:randpos] + b"\xFF" + b"\x0A" + content[randpos:]
 
         with open('sample', 'wb') as fd:
             fd.write(content)
