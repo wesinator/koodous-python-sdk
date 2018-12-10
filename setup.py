@@ -2,11 +2,10 @@
 import pip
 from setuptools import setup
 
-REQUIREMENTS_FILE = 'requires.txt'
 
 setup(name='koodous-py',
       packages=['koodous'],
-      version='0.8',
+      version='1.0.0',
       description='Module to interact with Koodous API',
       author='Antonio Sanchez',
       author_email='asanchez@koodous.com',

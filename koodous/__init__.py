@@ -1,3 +1,4 @@
 from .koodous import *
 from .utils import *
-VERSION = 0.9
+
+VERSION = '1.0.0'
