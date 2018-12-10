@@ -29,10 +29,7 @@ except ImportError:
 import certifi
 import requests
 
-try:
-    import utils  # Python 2.X
-except ImportError:
-    from koodous import utils  # Python 3+
+from .koodous import utils
 
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
