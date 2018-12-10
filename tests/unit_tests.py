@@ -114,28 +114,29 @@ class TestKoodousSDK(unittest.TestCase):
     def test_search(self):
         # With results
         apks = self.koodous.search(
-            'whatsapp and package_name:"com.whatsapp" and size:2MB+ and rating:1+')
+            'whatsapp and package_name:"com.whatsapp" and size:>2097152')
         self.assertTrue(len(apks) > 0)
         # With no results
         apks = self.koodous.search(
-         'whatsapp and package_name:"com.whatsapp" and size:1B- and rating:-5-')
+         'whatsapp and package_name:"com.whatsapp" and size:<100')
         self.assertTrue(len(apks) == 0)
 
     def test_analysis(self):
         # With existing hash
         analysis = self.koodous.get_analysis(
             'b1e01902c3e50f3b1181e0267b391dbbd3b69166552cb9ccf08b2a34464a7339')
-        self.assertTrue(hashlib.md5(json.dumps(
-            analysis)).hexdigest() == '63717947c7e74150f71f5623d5b0318c')
-        
+        self.assertEqual('17542eb47ddb6330d04d829dbf2f1ad1',
+                         hashlib.md5(json.dumps(analysis)).hexdigest())
+
         # With non existing analysis
         try:
             analysis = self.koodous.get_analysis(
-             '79a3bc6da45243355a920082dc67da0febf19379c25c721c43fd6b3f83ff4ef4')
-            self.assertTrue(analysis == None)
+                '522d46a6b649f0847948926df7f6dfce4c3f9283432bf65ac0172de11a6f2bc5')
+            self.fail("Expected an exception to have been raised")
         except Exception, reason:
-            self.assertTrue(str(reason) == 
-                "This sample has not analysis available, you can request it.")
+            self.assertEqual(
+                "This sample has not analysis available, you can request it.",
+                str(reason))
 
         # With non existing hash
         analysis = self.koodous.get_analysis('abc')
