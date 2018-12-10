@@ -20,12 +20,17 @@ limitations under the License.
 import hashlib
 import logging
 import time
-import urllib
+
+try:
+    from urllib import quote  # Python 2.X
+except ImportError:
+    from urllib.parse import quote  # Python 3+
 
 import certifi
 import requests
 
-import utils
+from . import utils
+
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
 
@@ -139,8 +144,7 @@ class Koodous(object):
             limit = float('Inf')
 
         next_page = '%s/apks?page_size=100&search=%s' % (BASE_URL,
-                                                         urllib.quote(
-                                                             search_term))
+                                                         quote(search_term))
 
         while next_page and len(to_ret) < limit:
             response = requests.get(url=next_page,

@@ -1,4 +1,8 @@
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import hashlib
 import json
 import logging
