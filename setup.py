@@ -13,7 +13,7 @@ except IOError:
     long_description = ''
 
 
-setup(name='koodous-py',
+setup(name='koodous',
       packages=['koodous'],
       version='1.0.0',
       description='Module to interact with Koodous API',
