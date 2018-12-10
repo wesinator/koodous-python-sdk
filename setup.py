@@ -1,6 +1,16 @@
 #!/usr/bin/env python
-import pip
+import os
 from setuptools import setup
+
+# paths
+directory = os.path.abspath(os.path.dirname(__file__))
+readme_path = os.path.join(directory, 'README.rst')
+
+
+try:
+    long_description = open(readme_path, 'r').read()
+except IOError:
+    long_description = ''
 
 
 setup(name='koodous-py',
@@ -11,6 +21,7 @@ setup(name='koodous-py',
       author_email='asanchez@koodous.com',
       license='Apache Version 2',
       url='https://koodous.com/',
+      long_description=long_description,
       download_url='https://github.com/Koodous/python-sdk/archive/master.zip',
       keywords=['koodous', 'api', 'sdk', 'python', 'android', 'apk', 'malware'],
       install_requires=["click",
