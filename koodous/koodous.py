@@ -29,7 +29,7 @@ except ImportError:
 import certifi
 import requests
 
-from .koodous import utils
+from . import utils
 
 
 __author__ = "Antonio Sanchez <asanchez@koodous.com>"
