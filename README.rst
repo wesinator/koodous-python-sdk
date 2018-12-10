@@ -15,14 +15,14 @@ Latest published release from PyPi:
 
 .. code-block:: bash
 
-    $ pip install koodous-py
+    $ pip install koodous
 
 
 Development snapshot from Github:
 
 .. code-block:: bash
 
-    $ pip install 'git+https://github.com/Koodous/python-sdk.git#egg=koodous_py'
+    $ pip install 'git+https://github.com/Koodous/python-sdk.git#egg=koodous'
 
 
 Library Usage
