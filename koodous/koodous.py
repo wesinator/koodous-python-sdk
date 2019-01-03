@@ -166,7 +166,13 @@ class Koodous(object):
         while next_url:
             response = requests.get(url=next_url, headers=self.headers,
                                 verify=REQUESTS_CA_BUNDLE)
-            to_yield = response.json()
+
+            # If valid response, get json content
+            if response.status_code == 200:
+                to_yield = response.json()
+            else:
+                raise Exception("Couldn't get ruleset matches: %s" % response.text)
+
             next_url = to_yield['next']
             del to_yield['next']
             del to_yield['previous']
