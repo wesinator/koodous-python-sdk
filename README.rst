@@ -33,13 +33,16 @@ registering to `koodous.com <https://koodous.com>`_ for free!
 
 Go to your `profile <https://koodous.com/settings/profile>`_ and there it is.
 
+.. code-block:: python
+
+    import koodous
+    koodous_obj = koodous.Koodous(token)
+
 Upload a file
 -------------
 
 .. code-block:: python
 
-    import koodous
-    koodous_obj = koodous.Koodous(token)
     koodous_obj.upload(filepath)
 
 
