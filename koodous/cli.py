@@ -25,7 +25,7 @@ import os
 import click
 
 from koodous import Koodous
-from utils import pygmentize_json, is_apk, sha256 as file_hash
+from koodous.utils import pygmentize_json, is_apk, sha256 as file_hash
 
 __author__ = "Federico Maggi <federico.maggi@gmail.com>"
 
