@@ -15,7 +15,7 @@ except IOError:
 
 setup(name='koodous',
       packages=['koodous'],
-      version='1.0.0',
+      version='1.0.1',
       description='Module to interact with Koodous API',
       author='Antonio Sanchez',
       author_email='asanchez@koodous.com',
