@@ -168,7 +168,7 @@ class Koodous(object):
                                 verify=REQUESTS_CA_BUNDLE)
 
             # If valid response, get json content
-            if response.status_code == 200:
+            if 200 <= response.status_code < 400:
                 to_yield = response.json()
             else:
                 raise Exception("Couldn't get ruleset matches: %s" % response.text)
