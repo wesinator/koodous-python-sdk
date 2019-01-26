@@ -9,7 +9,7 @@ you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
    http://www.apache.org/licenses/LICENSE-2.0
-   
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -157,7 +157,7 @@ class Koodous(object):
                     break
         return to_ret
 
-   def get_notifications(self):
+    def get_notifications(self):
         next_url = BASE_URL + "/notifications?read=False"
 
         while next_url:
@@ -354,6 +354,6 @@ class Koodous(object):
         """
 
         url = '%s/apks/%s/votes' % (BASE_URL, sha256)
-        res = requests.get(url, 
+        res = requests.get(url,
                            headers=self.headers, verify=REQUESTS_CA_BUNDLE)
         return res.json()
