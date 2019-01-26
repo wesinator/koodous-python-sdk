@@ -157,6 +157,24 @@ class Koodous(object):
                     break
         return to_ret
 
+   def get_notifications(self):
+        next_url = BASE_URL + "/notifications?read=False"
+
+        while next_url:
+            response = requests.get(url=next_url, headers=self.headers,
+                            verify=REQUESTS_CA_BUNDLE)
+
+            # If valid response, get json content
+            if response.status_code == 200:
+                to_yield = response.json()
+            else:
+                raise Exception("Couldn't get notifications: %s" % response.text)
+
+            next_url = to_yield['next']
+            del to_yield['next']
+            del to_yield['previous']
+            yield to_yield
+
     def get_ruleset_matches(self, ruleset_id):
         """Retrieve apks from a private (if it's mine) or a public ruleset
         """
